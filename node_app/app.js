@@ -23,7 +23,7 @@ var unsentData=[]
 var producer=new Producer(client,{requireAcks:1});
 
 //Location of the csv, that needs to be parsed.
-const inputFile='/Users/pohora/tmp/node/ufo_sightings/ufo_sightings_10k.csv';
+const inputFile='/Users/pohora/tmp/node/ufo_sightings/node_app/data/ufo_sightings_10k.csv';
 
 
 var sightingsArray;
@@ -66,8 +66,16 @@ producer.on('ready',function(){
        
     })
     // read the inputFile, feed the contents to the parser
-    fs.createReadStream(inputFile).pipe(parser);
+   readStream= fs.createReadStream(inputFile)//.pipe(parser);
+
+   readStream.on('open',function(){
+       readStream.pipe(parser)
+   })
     
+   //Handle Errors
+   readStream.on('error',function(){
+       console.error("Error reading file...")
+   })
 
     
 
